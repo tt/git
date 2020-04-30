@@ -57,5 +57,15 @@ test_expect_success 'can create leading directories outside of a git dir' '
 	nongit git bugreport -o foo/bar/baz
 '
 
+test_expect_success 'indicates populated hooks' '
+	test_when_finished rm git-bugreport-hooks.txt &&
+	test_when_finished rm -fr .git/hooks &&
+	mkdir .git/hooks &&
+	write_script .git/hooks/applypatch-msg &&
+	write_script .git/hooks/prepare-commit-msg.sample &&
+	git bugreport -s hooks &&
+	grep applypatch-msg git-bugreport-hooks.txt &&
+	! grep prepare-commit-msg git-bugreport-hooks.txt
+'
 
 test_done
