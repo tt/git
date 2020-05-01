@@ -24,7 +24,8 @@ The command can also be used to restore the content in the index with
 
 By default, the restore sources for working tree and the index are the
 index and `HEAD` respectively. `--source` could be used to specify a
-commit as the restore source.
+commit as the restore source; it is required when combining `--staged`
+and `--worktree`.
 
 See "Reset, restore and revert" in linkgit:git[1] for the differences
 between the three commands.
