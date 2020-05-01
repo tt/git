@@ -1580,13 +1580,11 @@ static int checkout_main(int argc, const char **argv, const char *prefix,
 	}
 	if (opts->checkout_index < 0 || opts->checkout_worktree < 0)
 		BUG("these flags should be non-negative by now");
-	if (opts->checkout_index && opts->checkout_worktree && !opts->from_treeish)
-		die(_("--source required when using --worktree and --staged"));
 	/*
-	 * convenient shortcut: "git restore --staged" equals
-	 * "git restore --staged --source HEAD"
+	 * convenient shortcut: "git restore --staged [--worktree]" equals
+	 * "git restore --staged [--worktree] --source HEAD"
 	 */
-	if (!opts->from_treeish && opts->checkout_index && !opts->checkout_worktree)
+	if (!opts->from_treeish && opts->checkout_index)
 		opts->from_treeish = "HEAD";
 
 	/*

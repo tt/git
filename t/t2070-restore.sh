@@ -69,9 +69,15 @@ test_expect_success 'restore --staged uses HEAD as source' '
 	test_cmp expected actual
 '
 
-test_expect_success 'restore --worktree --staged requires --source' '
-	test_must_fail git restore --worktree --staged first.t 2>err &&
-	test_i18ngrep "source required when using --worktree and --staged" err
+test_expect_success 'restore --worktree --staged uses HEAD as source' '
+	test_when_finished git reset --hard &&
+	git show HEAD:./first.t >expected &&
+	echo dirty >>first.t &&
+	git add first.t &&
+	git restore --worktree --staged first.t &&
+	git show :./first.t >actual &&
+	test_cmp expected actual &&
+	test_cmp expected first.t
 '
 
 test_expect_success 'restore --ignore-unmerged ignores unmerged entries' '
