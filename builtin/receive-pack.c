@@ -30,7 +30,7 @@
 #include "worktree.h"
 
 static const char * const receive_pack_usage[] = {
-	N_("git receive-pack <git-dir>"),
+	N_("git receive-pack [--strict] <git-dir>"),
 	NULL
 };
 
@@ -1949,6 +1949,7 @@ static int delete_only(struct command *commands)
 int cmd_receive_pack(int argc, const char **argv, const char *prefix)
 {
 	int advertise_refs = 0;
+	int strict = 0;
 	struct command *commands;
 	struct oid_array shallow = OID_ARRAY_INIT;
 	struct oid_array ref = OID_ARRAY_INIT;
@@ -1960,6 +1961,8 @@ int cmd_receive_pack(int argc, const char **argv, const char *prefix)
 		OPT_HIDDEN_BOOL(0, "stateless-rpc", &stateless_rpc, NULL),
 		OPT_HIDDEN_BOOL(0, "advertise-refs", &advertise_refs, NULL),
 		OPT_HIDDEN_BOOL(0, "reject-thin-pack-for-testing", &reject_thin, NULL),
+		OPT_BOOL(0, "strict", &strict,
+			 N_("do not try <directory>/.git/ if <directory> is no Git directory")),
 		OPT_END()
 	};
 
@@ -1976,7 +1979,7 @@ int cmd_receive_pack(int argc, const char **argv, const char *prefix)
 
 	setup_path();
 
-	if (!enter_repo(service_dir, 0))
+	if (!enter_repo(service_dir, strict))
 		die("'%s' does not appear to be a git repository", service_dir);
 
 	git_config(receive_pack_config, NULL);
